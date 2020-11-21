@@ -31,20 +31,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        // Root View Controller
-        let rootViewController = SearchViewController()
+        // Root View Controllers
+        let searchViewController = SearchViewController()
+        let departureBoardViewController = TimetableViewController()
 
         // Navigation View Controller
-        let navigationController = UINavigationController(rootViewController: rootViewController)
-        navigationController.navigationBar.prefersLargeTitles = true
+        let primaryNavigationController = UINavigationController(rootViewController:searchViewController)
+        primaryNavigationController.navigationBar.prefersLargeTitles = true
+        let secondaryNavigationController = UINavigationController(rootViewController:departureBoardViewController)
+        secondaryNavigationController.navigationBar.prefersLargeTitles = true
+
+        // Split View Controller
+        let splitViewController =  UISplitViewController()
+        splitViewController.delegate = self
+        splitViewController.preferredDisplayMode = .oneBesideSecondary
+        splitViewController.viewControllers = [
+            primaryNavigationController,
+            secondaryNavigationController
+        ]
 
         // Main window
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = navigationController
+        window.rootViewController = splitViewController
         self.window = window
         window.makeKeyAndVisible()
-
     }
 
+}
+
+extension SceneDelegate: UISplitViewControllerDelegate {
+    func splitViewController(
+        _ splitViewController: UISplitViewController,
+        collapseSecondary secondaryViewController: UIViewController,
+        onto primaryViewController: UIViewController) -> Bool {
+        return true
+    }
 }
 

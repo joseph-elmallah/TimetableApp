@@ -409,8 +409,13 @@ extension SearchViewController {
             return
         }
         let query = TimetableQuery(stationName: result.label, showPlatforms: true)
-        let timetableViewController = TimetableViewController(query: query)
-        navigationController?.pushViewController(timetableViewController, animated: true)
+
+        guard let detailNavigation = splitViewController?.viewControllers.last as? UINavigationController, let timetable = detailNavigation.topViewController as? TimetableViewController else {
+            let timetableViewController = TimetableViewController(query: query)
+            navigationController?.pushViewController(timetableViewController, animated: true)
+            return
+        }
+        timetable.query = query
     }
 }
 

@@ -50,11 +50,17 @@ final class TimetableViewController: UITableViewController {
                     messageView.image = UIImage(systemName: "circle.dashed", withConfiguration: Self.SFSymbolImageConfig)
                     messageView.showsActivityIndicator = false
                     messageView.tintColor = .systemGray
-                    messageView.title = "No Connections Found!"
-                    messageView.subtitle = "There were no connections at that station. Please try again later."
-                    messageView.action = MessageView.Action(title: "Retry", action: { [weak self] in
-                        self?.reload()
-                    })
+                    if let query = query {
+                        messageView.title = "No Connections Found!"
+                        messageView.subtitle = "There were no connections at \(query.stationName). Please try again later."
+                        messageView.action = MessageView.Action(title: "Retry", action: { [weak self] in
+                            self?.reload()
+                        })
+                    } else {
+                        messageView.title = "No Station Selected!"
+                        messageView.subtitle = nil
+                        messageView.action = nil
+                    }
                 case .loading:
                     guard dataSource.snapshot().numberOfItems == 0 else {
                         messageView.isHidden = true
@@ -136,8 +142,8 @@ final class TimetableViewController: UITableViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
 
-        // Configure the message view
-        messageView.isHidden = true
+        // Configure the interface state
+        interfaceSM = .empty
     }
 
     override func viewWillAppear(_ animated: Bool) {
