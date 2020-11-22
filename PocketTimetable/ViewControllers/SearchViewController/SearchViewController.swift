@@ -369,7 +369,10 @@ final class SearchViewController: UITableViewController {
         manager.activityType = .other
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         manager.distanceFilter = 30
-        userLocation = canUseLocation(manager.location)
+        if manager.authorizationStatus == .authorizedAlways ||
+            manager.authorizationStatus == .authorizedWhenInUse {
+            userLocation = canUseLocation(manager.location)
+        }
         return manager
     }()
 
